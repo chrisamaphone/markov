@@ -20,8 +20,7 @@ function readFileAndDisplay(evt) {
       reader = r;
       source = reader.result;
      // console.log("New source: "+source);
-      // document.getElementById("source").innerHTML = JSON.stringify(source);
-      document.getElementById("source").innerHTML = source;
+      document.getElementById("source").innerHTML = JSON.stringify(source);
     }
   } else { 
     alert("Failed to load file");
@@ -57,23 +56,57 @@ function choose_random(lst) {
 }
 
 
+function take_n(n, array, index) {
+  var slice = [];
+  while (index < array.length && n > 0) {
+    slice.push(array[index]);
+    index++;
+    n--;
+  }
+  return slice;
+}
+
+function after(n, array, index) {
+  return array[index+n];
+}
+
 // Key-value stores
+
+function array_equal(a1, a2) {
+  if (a1 == null || a2 == null) {
+    if(a1 == null && a2 == null) {
+      return true;
+    }
+    return false;
+  }
+  if (a1.length != a2.length) {
+    return false;
+  }
+  for(var i = 0; i < a1.length; i++) {
+    if (a1[i] != a2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
 
 function lookup(map, key) {
   for (var i = 0; i < map.length; i++) {
     var entry = map[i];
-    if (entry.key == key) {
+    if (array_equal(entry.key, key)) {
       return entry.value;
     }
   }
   return undefined;
 }
 
-// keys map to arrays of possible values
-// new keys map to singleton array of value initialized with
-// old keys get new values pushed onto the array
 function add(map, key, value) {
- // TODO 
+  var entry = lookup(map, key);
+  if (entry == undefined) {
+    map.push({key: key, value: [value]});
+  } else { 
+    entry.push(value);
+  }
 }
 
 // Markov Generator
@@ -82,30 +115,25 @@ var source =
  "I think that I will think of the will that I wrote."
 
 token_table = [];
-corpus = [];
-
-// Build a table from keys to possible next values
-function build_table(tokens) {
- // TODO 
-}
-
-// Return a random next work that could follow key
-function select(key) {
- // TODO 
-}
 
 
 /* generate : int * string -> string
  * Input: (length * seed)
  * Output: a string of the provided length in tokens from provided seed. */
 function generate_from (length, seed) {
- // TODO 
+  if (length == 0 || seed == "") {
+    return seed;
+  } else {
+    var next = generate_next(seed);
+    var rest = generate_from(length - 1, next);
+    return seed+" "+rest;
+  }
 }
 
 /* Generate something same size as the source, starting from the same word
  * as the source. */
 function generate () {
- // TODO 
+
 }
 
 

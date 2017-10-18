@@ -73,7 +73,12 @@ function lookup(map, key) {
 // new keys map to singleton array of value initialized with
 // old keys get new values pushed onto the array
 function add(map, key, value) {
- // TODO 
+  var entry = lookup(map, key);
+  if (entry == undefined) {
+    map.push({key: key, value: [value]});
+  } else { 
+    entry.push(value);
+  }
 }
 
 // Markov Generator
@@ -84,14 +89,22 @@ var source =
 token_table = [];
 corpus = [];
 
-// Build a table from keys to possible next values
 function build_table(tokens) {
- // TODO 
+  for (var i = 0; i < tokens.length - 1; i++) {
+    var key = tokens[i];
+    var value = tokens[i+1];
+    add(token_table, key, value);
+  }
 }
 
-// Return a random next work that could follow key
 function select(key) {
- // TODO 
+  var choices = lookup(token_table, key);
+  if (choices == undefined) {
+    console.log("No next options for <"+key+">");
+    // unseen state
+    return choose_random(corpus);
+  }
+  return choose_random(choices);
 }
 
 
@@ -99,13 +112,22 @@ function select(key) {
  * Input: (length * seed)
  * Output: a string of the provided length in tokens from provided seed. */
 function generate_from (length, seed) {
- // TODO 
+  if (length == 0 || seed == "") {
+    return seed;
+  } else {
+    var next = select(seed);
+    var rest = generate_from(length - 1, next);
+    return seed+" "+rest;
+  }
 }
 
 /* Generate something same size as the source, starting from the same word
  * as the source. */
 function generate () {
- // TODO 
+  corpus = tokenize(source);
+  build_table(corpus);
+  var generated = generate_from(corpus.length-1, corpus[0]);
+  return generated;
 }
 
 
