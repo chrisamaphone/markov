@@ -112,7 +112,7 @@ function select(key) {
  * Input: (length * seed)
  * Output: a string of the provided length in tokens from provided seed. */
 function generate_from (length, seed) {
-  if (length == 0 || seed == "") {
+  if (length == 0) {
     return seed;
   } else {
     var next = select(seed);
@@ -124,6 +124,7 @@ function generate_from (length, seed) {
 /* Generate something same size as the source, starting from the same word
  * as the source. */
 function generate () {
+  source = document.getElementById("source").value;
   corpus = tokenize(source);
   build_table(corpus);
   var generated = generate_from(corpus.length-1, corpus[0]);
